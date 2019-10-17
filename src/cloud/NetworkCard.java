@@ -1,5 +1,6 @@
 package cloud;
 
+import cloud.exceptions.CloudGenericException;
 import cloud.util.CloudUtil;
 
 public class NetworkCard {
@@ -14,7 +15,10 @@ public class NetworkCard {
 	 * NetworkCard[1] Reemplazar concatenación de strings usando "+" por
 	 * StringBuilder en Constructores
 	 */
-	NetworkCard(int unitNumber) {
+	NetworkCard(int unitNumber) throws CloudGenericException {
+		if (unitNumber <= 0)
+			throw new CloudGenericException("Numero de unidades de tarjetas de red debe ser mayor a 0.");
+
 		this.unitNumber = unitNumber;
 		// Escribe tu código {
 		StringBuilder strBuilder = new StringBuilder();
