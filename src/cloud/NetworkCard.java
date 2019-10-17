@@ -10,16 +10,32 @@ public class NetworkCard {
 	public int speedMb = MAX_SPEED_MB;
 	public String network;
 
+	/*
+	 * NetworkCard[1] Reemplazar concatenación de strings usando "+" por
+	 * StringBuilder en Constructores
+	 */
 	NetworkCard(int unitNumber) {
 		this.unitNumber = unitNumber;
-		this.label = "Network Card " + unitNumber;
+		// Escribe tu código {
+		StringBuilder strBuilder = new StringBuilder();
+		strBuilder.append("Network Card ");
+		strBuilder.append(unitNumber);
+
+		this.label = strBuilder.toString();
+		// }
 		this.macAddress = CloudUtil.getMACAddress();
 	}
 
 	NetworkCard(String network, int unitNumber) {
 		this.network = network;
 		this.unitNumber = unitNumber;
-		this.label = "Network Card " + unitNumber;
+		// Escribe tu código {
+		StringBuilder strBuilder = new StringBuilder();
+		strBuilder.append("Network Card ");
+		strBuilder.append(unitNumber);
+
+		this.label = strBuilder.toString();
+		// }
 		this.macAddress = CloudUtil.getMACAddress();
 	}
 
@@ -27,28 +43,41 @@ public class NetworkCard {
 		this.network = network;
 		this.unitNumber = unitNumber;
 		this.speedMb = speedMb;
-		this.label = "Network Card " + unitNumber;
+		// Escribe tu código {
+		StringBuilder strBuilder = new StringBuilder();
+		strBuilder.append("Network Card ");
+		strBuilder.append(unitNumber);
+
+		this.label = strBuilder.toString();
+		// }
 		this.macAddress = CloudUtil.getMACAddress();
 	}
 
-	@Override
+	/*
+	 * NetworkCard[2] obrecargar el método java.lang.Object.toString() para mostrar
+	 * la representación en String de NetworkCard como lo hacía
+	 * CloudUtil.printNICInfo() (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
 	public String toString() {
-		StringBuilder strBuilder = new StringBuilder();
-		strBuilder.append(String.format("Mac Adress: %s", this.macAddress));
-		strBuilder.append(System.lineSeparator());
+		StringBuilder sb = new StringBuilder();
+		// Escribe tu código {
+		sb.append(String.format("Mac Adress: %s", this.macAddress));
+		sb.append(System.lineSeparator());
 
-		strBuilder.append(String.format("Unit Number: %d", this.unitNumber));
-		strBuilder.append(System.lineSeparator());
+		sb.append(String.format("Unit Number: %d", this.unitNumber));
+		sb.append(System.lineSeparator());
 
-		strBuilder.append(String.format("Label: %s", this.label));
-		strBuilder.append(System.lineSeparator());
+		sb.append(String.format("Label: %s", this.label));
+		sb.append(System.lineSeparator());
 
-		strBuilder.append(String.format("Max Speed (MB): %d", NetworkCard.MAX_SPEED_MB));
-		strBuilder.append(System.lineSeparator());
+		sb.append(String.format("Max Speed (MB): %d", NetworkCard.MAX_SPEED_MB));
+		sb.append(System.lineSeparator());
 
-		strBuilder.append(String.format("Network: %s", this.network));
-		strBuilder.append(System.lineSeparator());
-
-		return strBuilder.toString();
+		sb.append(String.format("Network: %s", this.network));
+		sb.append(System.lineSeparator());
+		// }
+		return sb.toString();
 	}
 }
