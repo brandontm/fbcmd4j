@@ -2,14 +2,14 @@ package cloud;
 
 import java.util.HashMap;
 
+import cloud.exceptions.CloudGenericException;
 import cloud.util.CloudUtil;
-import cloud.exceptions.CloudGenericException;;
 
-public class VirtualMachine {
+public class VirtualMachine implements Powerable {
 	final String id; // Identificador único
 	int cpuCount; // Número de CPU
 	long memoryGB; // Memoria en GB
-	boolean powerStatus; // Estado
+	PowerState powerStatus = PowerState.POWERED_OFF; // Estado
 	String name; // Nombre
 	String guestOS; // Sistema Operativo
 
@@ -41,11 +41,10 @@ public class VirtualMachine {
 			throw new CloudGenericException("Número de CPUs debe ser mayor a 0.");
 		}
 
-		if (memoryGB < 1024 || memoryGB % 1024 != 0) {
-			if (memoryGB < 1024)
-				throw new CloudGenericException("Memoria debe ser mayor o igual a 1024");
-
-			System.err.println("Memoria debe ser igual o mayor a 1024 y multiplo de 1024.");
+		if (memoryGB < 1024) {
+			throw new CloudGenericException("Memoria debe ser mayor o igual a 1024");
+		} else if (memoryGB % 1024 != 0) {
+			throw new CloudGenericException("Memoria debe ser multiplo de 1024");
 		}
 
 		if (guestOS.length() < 6) {
@@ -65,11 +64,10 @@ public class VirtualMachine {
 			throw new CloudGenericException("Número de CPUs debe ser mayor a 0.");
 		}
 
-		if (memoryGB < 1024 || memoryGB % 1024 != 0) {
-			if (memoryGB < 1024)
-				throw new CloudGenericException("Memoria debe ser mayor o igual a 1024");
-
-			System.err.println("Memoria debe ser igual o mayor a 1024 y multiplo de 1024.");
+		if (memoryGB < 1024) {
+			throw new CloudGenericException("Memoria debe ser mayor o igual a 1024");
+		} else if (memoryGB % 1024 != 0) {
+			throw new CloudGenericException("Memoria debe ser mayor o igual a 1024");
 		}
 
 		if (guestOS.length() < 6) {
@@ -92,32 +90,23 @@ public class VirtualMachine {
 		return this.id;
 	}
 
-	/*
-	 * VirtualMachine[9]
-	 * Crear método isPoweredOn regresando 
-	 * un Boolean si la VM está prendida.
-	 */
-	boolean isPoweredOn() {
-		/* Validar si la VM está prendida */
-		// Escribe tu código {
-		return this.powerStatus;
-		// }
-	}
-
-	/*
-	 * VirtualMachine[8]
-	 * Crear método isPoweredOff regresando 
-	 * un Boolean si la VM está apagada.
-	 */
-	boolean isPoweredOff() {
-		// Escribe tu código {
-		return !this.powerStatus;
-		// }
-	}
-
 	int numberOfCPUs() {
 		/* Obtener el número de CPUs de la VM */
 		return this.cpuCount;
+	}
+
+	/**
+	 * @return the powerStatus
+	 */
+	public PowerState getPowerStatus() {
+		return powerStatus;
+	}
+
+	/**
+	 * @param powerStatus the powerStatus to set
+	 */
+	public void setPowerStatus(PowerState powerStatus) {
+		this.powerStatus = powerStatus;
 	}
 
 	/* 
@@ -126,14 +115,15 @@ public class VirtualMachine {
 	 *  VM está prendida e imprimir mensaje 
 	 * informando que el estado es prendido.
 	 */
-	void powerOn() {
+	@Override
+	public void powerOn() {
 		/* Encender la VM */
 		// Escribe tu código {
-		if (this.isPoweredOn()) {
+		if (this.getPowerStatus() == PowerState.POWERED_ON) {
 			System.out.println("La maquina esta prendida");
 			return;
 		}
-		this.powerStatus = true;
+		this.setPowerStatus(PowerState.POWERED_ON);
 		// }
 	}
 
@@ -142,14 +132,24 @@ public class VirtualMachine {
 	 * Método powerOff: validar si la VM está prendida 
 	 * e imprimir mensaje informando que el estado es apagado.
 	 */
-	void powerOff() {
+	@Override
+	public void powerOff() {
 		// Escribe tu código {
-		if (this.isPoweredOn()) {
-			System.out.println("La maquina esta prendida");
+		if (this.getPowerStatus() == PowerState.POWERED_OFF) {
+			System.out.println("La maquina esta apagada");
 			return;
 		}
-		this.powerStatus = false;
+		this.setPowerStatus(PowerState.POWERED_OFF);
 		// }
+	}
+
+	@Override
+	public void suspend() {
+		if (this.getPowerStatus() == PowerState.SUSPENDED) {
+			System.out.println("La maquina esta suspendida");
+			return;
+		}
+		this.setPowerStatus(PowerState.SUSPENDED);
 	}
 
 	void setName(String name) {
@@ -222,7 +222,7 @@ public class VirtualMachine {
 		sb.append(String.format("Memoria (GB): %d", this.memoryGB));
 		sb.append(System.lineSeparator());
 
-		sb.append(String.format("Estado: %s", (this.isPoweredOn() ? "Encendido" : "Apagado")));
+		sb.append(String.format("Estado: %s", this.getPowerStatus()));
 		sb.append(System.lineSeparator());
 
 		sb.append(String.format("Nombre: %s", this.name));
